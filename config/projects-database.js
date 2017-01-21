@@ -172,9 +172,9 @@ function getAllDocumentsWithAttachments(callback){
 exports.getAllDocumentsWithAttachments = getAllDocumentsWithAttachments;
 
 /**
- * [bulkUpdateDocuments description]
- * @param  {[type]} documents [description]
- * @return {[type]}           [description]
+ * updates multiple documents with a single http request
+ * @param  {JSON Array} An Array where each element contains the document and its attachments
+ * @return {Promise}  a Promise that attempts to fulfill te task of updating these docs
  */
 function bulkUpdateDocuments(documents){
   var requestObject = {

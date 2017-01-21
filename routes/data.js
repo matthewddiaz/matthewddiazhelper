@@ -5,10 +5,11 @@ var express = require('express');
 var router = express.Router();
 
 /**
-* [get description]
-* @param  {[type]} '/allDocsSortedByCommit' [description]
-* @param  {[type]} function(req,            res           [description]
-* @return {[type]}                          [description]
+* Route to get all docs sorted by lasted commit in descending order.
+* @param  {route} '/allDocsSortedByCommit'
+* @param  {callback}
+* @return {res} sends either the result if getSortingByCommitView was filfilled
+*               or sends an error if the Promise was rejected.
 */
 router.get('/allDocsSortedByCommit', function(req, res){
   databaseViewRetriver.getSortingByCommitView('returnOrderList', 'orderedProjects')
@@ -20,10 +21,11 @@ router.get('/allDocsSortedByCommit', function(req, res){
 });
 
 /**
-* [post description]
-* @param  {[type]} '/refreshProjects' [description]
-* @param  {[type]} function(req,      res           [description]
-* @return {[type]}                    [description]
+* Route to refresh projects that need to be updated in projects database
+* @param  {route} '/refreshProjects'
+* @param  {callback}
+* @return {res} sends either the result if refreshProjects was filfilled
+*               or sends an error if the Promise was rejected.
 */
 router.post('/refreshProjects', function(req, res){
   databaseRefresher.refreshProjects()
