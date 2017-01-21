@@ -5,20 +5,26 @@ var databaseAccessor = require('../config/projects-database');
 var githubAuthentication = require('../config/github-credentials').credentials;
 var utils = require('../utils/utils');
 
+/**
+ * checks the type of an object
+ * @param  {Object} object which we do not now the type of
+ * @return {String} the String tells the program what type of object the input is
+ */
 function checkObjectType(object){
   return Object.prototype.toString.call(object);
 };
 
 /**
- * [function description]
- * @param  {[type]} entireRepoArray [description]
- * @return {[type]}                 [description]
+ * This method checks to see if there have been any commits to the projects
+ * in the database; if any project is out of state it's date gets updated.
+ * @param  {Array} entireRepoArray array of all the repos listed on github
+ * @return {Array} list of projects that need to be updated in projects database
  */
 exports.acquireDesiredProjects = function(entireRepoArray){
   return new Promise(function(resolve, reject){
     databaseAccessor.getAllDocuments(function(err, response){
       if(err){
-        console.log(err);
+        reject(err);
       }
       databaseProjectsArray = response.rows;
 
@@ -101,19 +107,29 @@ exports.acquireGithubProjects = function(urlRequest){
     return utils.makeHttpRequest(requestObject);
 };
 
+/**
+ * this method checks if input reposArr is of type String; if it is
+ * convert the String to an Array and return it.
+ * @param  {Object} reposArr [an object that may be a String or Array]
+ * @return {Array}          [the input object is returned as an Array]
+ */
+function getRepoInArrayType(reposArr){
+  if(checkObjectType(reposArr) === '[object String]'){
+    reposArr = JSON.parse(reposArr);
+  }
+  return reposArr;
+};
+
+/**
+ * This method executes a chain of Promises to first obtain the projects
+ * that need to be updated and then actually update them in the database.
+ * @return {Promise} this last promise will either resolve or reject.
+ *                   NOTE: This promise will reject if any of the above chained
+ *                   promises was rejected.
+ */
 exports.refreshProjects = function(){
-  this.acquireGithubProjects(githubAuthentication.url)
-  .then(function(reposArr){
-    if(checkObjectType(reposArr) === '[object String]'){
-      reposArr = JSON.parse(reposArr);
-    }
-    return reposArr;
-   })
+  return this.acquireGithubProjects(githubAuthentication.url)
+  .then(getRepoInArrayType)
   .then(this.acquireDesiredProjects)
-  .then(function(listOfUpdatingProjects){
-    databaseAccessor.bulkUpdateDocuments(listOfUpdatingProjects);
-  })
-  .catch(function(error) {
-    console.log("Failed!", error);
-  });
+  .then(databaseAccessor.bulkUpdateDocuments);
 };

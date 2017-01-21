@@ -12,17 +12,27 @@ var express = require('express');
 // for more info, see: https://www.npmjs.com/package/cfenv
 var cfenv = require('cfenv');
 var databaseRefresher = require('./project_updater/project-refresher');
-var project_data = require('./routes/data'); //this is the route to our data.js file
+var projectDataRoute = require('./routes/data');
 
 databaseRefresher.refreshProjects();
+
+/**
+ * [refreshProjects description]
+ * @return {[type]} [description]
+ */
+databaseRefresher.refreshProjects()
+  .then(function(result){
+    console.log(result);
+  }).catch(function(error){
+    console.log(error);
+  });
 
 // create a new express server
 var app = express();
 
 // serve the files out of ./public as our main files
 app.use(express.static(__dirname + '/public'));
-
-app.use('/data', project_data);
+app.use('/data', projectDataRoute);
 
 // get the app environment from Cloud Foundry
 var appEnv = cfenv.getAppEnv();

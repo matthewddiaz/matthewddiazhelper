@@ -3,6 +3,7 @@ var cloudantCredentials = require('./database.json').credentials;
 var crypto = require('crypto');
 var request = require('request-promise');
 var Cloudant = require('cloudant');
+var utils = require('../utils/utils');
 
 var cloudant = Cloudant({account:cloudantCredentials.username,
             password:cloudantCredentials.password});
@@ -170,6 +171,11 @@ function getAllDocumentsWithAttachments(callback){
 }
 exports.getAllDocumentsWithAttachments = getAllDocumentsWithAttachments;
 
+/**
+ * updates multiple documents with a single http request
+ * @param  {JSON Array} An Array where each element contains the document and its attachments
+ * @return {Promise}  a Promise that attempts to fulfill te task of updating these docs
+ */
 function bulkUpdateDocuments(documents){
   var requestObject = {
     method: 'POST',
@@ -178,14 +184,8 @@ function bulkUpdateDocuments(documents){
       docs : documents
     },
     json: true // Automatically stringifies the body to JSON
-};
+  };
 
-  request(requestObject)
-    .then(function (response) {
-        console.log(response);
-    })
-    .catch(function (err) {
-        console.log(err);
-    });
+  return utils.makeHttpRequest(requestObject);
 }
 exports.bulkUpdateDocuments = bulkUpdateDocuments;
