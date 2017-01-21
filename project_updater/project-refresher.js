@@ -18,7 +18,7 @@ exports.acquireDesiredProjects = function(entireRepoArray){
   return new Promise(function(resolve, reject){
     databaseAccessor.getAllDocuments(function(err, response){
       if(err){
-        console.log(err);
+        reject(err);
       }
       databaseProjectsArray = response.rows;
 
@@ -110,8 +110,9 @@ exports.refreshProjects = function(){
     return reposArr;
    })
   .then(this.acquireDesiredProjects)
-  .then(function(listOfUpdatingProjects){
-    databaseAccessor.bulkUpdateDocuments(listOfUpdatingProjects);
+  .then(databaseAccessor.bulkUpdateDocuments)
+  .then(function(response){
+    console.log(response);
   })
   .catch(function(error) {
     console.log("Failed!", error);
