@@ -171,6 +171,11 @@ function getAllDocumentsWithAttachments(callback){
 }
 exports.getAllDocumentsWithAttachments = getAllDocumentsWithAttachments;
 
+/**
+ * [bulkUpdateDocuments description]
+ * @param  {[type]} documents [description]
+ * @return {[type]}           [description]
+ */
 function bulkUpdateDocuments(documents){
   var requestObject = {
     method: 'POST',

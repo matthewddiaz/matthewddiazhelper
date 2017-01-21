@@ -101,20 +101,25 @@ exports.acquireGithubProjects = function(urlRequest){
     return utils.makeHttpRequest(requestObject);
 };
 
+/**
+ * [getRepoInArrayType description]
+ * @param  {[type]} reposArr [description]
+ * @return {[type]}          [description]
+ */
+function getRepoInArrayType(reposArr){
+  if(checkObjectType(reposArr) === '[object String]'){
+    reposArr = JSON.parse(reposArr);
+  }
+  return reposArr;
+};
+
+/**
+ * [function description]
+ * @return {[type]} [description]
+ */
 exports.refreshProjects = function(){
-  this.acquireGithubProjects(githubAuthentication.url)
-  .then(function(reposArr){
-    if(checkObjectType(reposArr) === '[object String]'){
-      reposArr = JSON.parse(reposArr);
-    }
-    return reposArr;
-   })
+  return this.acquireGithubProjects(githubAuthentication.url)
+  .then(getRepoInArrayType)
   .then(this.acquireDesiredProjects)
-  .then(databaseAccessor.bulkUpdateDocuments)
-  .then(function(response){
-    console.log(response);
-  })
-  .catch(function(error) {
-    console.log("Failed!", error);
-  });
+  .then(databaseAccessor.bulkUpdateDocuments);
 };
