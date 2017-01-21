@@ -8,6 +8,6 @@ exports.getSortingByCommitView = function(designName, viewName){
         reject(err);
       }
       resolve(body.rows);
-    }
+    });
   });
-});
+}
