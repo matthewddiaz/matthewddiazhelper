@@ -5,7 +5,7 @@ var request = require('request-promise');
 var Cloudant = require('cloudant');
 
 var cloudant = Cloudant({account:cloudantCredentials.username,
-            password:cloudantCredentials.username});
+            password:cloudantCredentials.password});
 
 var db = cloudant.db.use(cloudantCredentials.projectsDatabase);
 exports.db = db;
@@ -173,7 +173,7 @@ exports.getAllDocumentsWithAttachments = getAllDocumentsWithAttachments;
 function bulkUpdateDocuments(documents){
   var requestObject = {
     method: 'POST',
-    uri: cloudant.url + '/' + cloudantCredentials.projectsDatabase + '/_bulk_docs',
+    uri: cloudantCredentials.url + '/' + cloudantCredentials.projectsDatabase + '/_bulk_docs',
     body: {
       docs : documents
     },
