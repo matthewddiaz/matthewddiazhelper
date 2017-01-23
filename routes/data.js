@@ -3,6 +3,7 @@ var databaseViewRetriver = require('../config/project-db-view-functions');
 var databaseRefresher = require('../project_updater/project-refresher');
 var githubAuthentication = require('../config/github-credentials').credentials;
 var utils = require('../utils/utils');
+//NOTE: for more information on Routing visit https://expressjs.com/en/guide/routing.html
 var router = express.Router();
 
 /**
@@ -28,10 +29,10 @@ router.get('/allDocsSortedByCommit', function(req, res){
  * NOTE: in the request the user has to include a valid githubUserName and repoName
  * @return {String} last commit of project
  */
-router.get('/getProjectLastCommit', function(req, res){
-  var reqBody = req.body;
-  var githubUserName = reqBody.githubUserName;
-  var repoName = reqBody.repoName;
+router.get('/getProjectLastCommit/:githubUserName/:repoName', function(req, res){
+  var reqParameters = req.params;
+  var githubUserName = reqParameters.githubUserName;
+  var repoName = reqParameters.repoName;
   if(githubUserName != null && repoName != null){
     var requestUrl = githubAuthentication.githubUrl + githubAuthentication.getDoc
           + '/' + githubUserName + '/' + repoName;
@@ -45,11 +46,11 @@ router.get('/getProjectLastCommit', function(req, res){
       }
     };
     utils.makeHttpRequest(requestObject)
-          .then(function(result){
-            // var repo = result.body;
-            // var lastCommit = repo.pushed_at;
-            // res.send(lastCommit);
-            res.send(result);
+          .then(function(repo){
+            if(utils.checkObjectType(repo) == '[object String]'){
+              repo = JSON.parse(repo);
+            }
+            res.send(repo.pushed_at);
           }).catch(function(error){
             res.send(error);
           });

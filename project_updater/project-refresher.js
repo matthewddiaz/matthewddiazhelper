@@ -6,15 +6,6 @@ var githubAuthentication = require('../config/github-credentials').credentials;
 var utils = require('../utils/utils');
 
 /**
- * checks the type of an object
- * @param  {Object} object which we do not now the type of
- * @return {String} the String tells the program what type of object the input is
- */
-function checkObjectType(object){
-  return Object.prototype.toString.call(object);
-};
-
-/**
  * This method checks to see if there have been any commits to the projects
  * in the database; if any project is out of state it's date gets updated.
  * @param  {Array} entireRepoArray array of all the repos listed on github
@@ -58,10 +49,10 @@ exports.acquireDesiredProjects = function(entireRepoArray){
         var projectLastCommit = projectDoc.lastCommit;
         var repoLastCommit = repoProject.pushed_at;
         //check if conversion of String to Date is necessary for time stamps variable
-        if(checkObjectType(repoLastCommit) == '[object String]'){
+        if(utils.checkObjectType(repoLastCommit) == '[object String]'){
           repoLastCommit = new Date(repoLastCommit);
         }
-        if(checkObjectType(projectLastCommit) == '[object String]'){
+        if(utils.checkObjectType(projectLastCommit) == '[object String]'){
           projectLastCommit = new Date(projectLastCommit);
         }
 
@@ -114,7 +105,7 @@ exports.acquireGithubProjects = function(urlRequest){
  * @return {Array}          [the input object is returned as an Array]
  */
 function getRepoInArrayType(reposArr){
-  if(checkObjectType(reposArr) === '[object String]'){
+  if(utils.checkObjectType(reposArr) === '[object String]'){
     reposArr = JSON.parse(reposArr);
   }
   return reposArr;
