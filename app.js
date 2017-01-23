@@ -14,8 +14,6 @@ var cfenv = require('cfenv');
 var databaseRefresher = require('./project_updater/project-refresher');
 var projectDataRoute = require('./routes/data');
 
-databaseRefresher.refreshProjects();
-
 /**
  * [refreshProjects description]
  * @return {[type]} [description]

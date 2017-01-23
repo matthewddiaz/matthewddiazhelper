@@ -128,7 +128,9 @@ function getRepoInArrayType(reposArr){
  *                   promises was rejected.
  */
 exports.refreshProjects = function(){
-  return this.acquireGithubProjects(githubAuthentication.url)
+  var gitRequestURL = githubAuthentication.githubUrl + githubAuthentication.getAllDocs;
+  console.log("The url is " + gitRequestURL);
+  return this.acquireGithubProjects(gitRequestURL)
   .then(getRepoInArrayType)
   .then(this.acquireDesiredProjects)
   .then(databaseAccessor.bulkUpdateDocuments);
