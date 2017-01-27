@@ -14,16 +14,24 @@ var cfenv = require('cfenv');
 var databaseRefresher = require('./project_updater/project-refresher');
 var projectDataRoute = require('./routes/data');
 
+//timeInterval represents 24hrs in milliseconds
+var timeInterval = 3600000;
+setInterval(updateProjects, timeInterval);
+
 /**
- * [refreshProjects description]
- * @return {[type]} [description]
+ * This method will execute the method databaseRefesher that returns a Promise;
+ * if the process is sucessful will just display an array of projects that
+ * were refreshed. If the promise was rejected then it will display the error
+ * from the Promise.
  */
-databaseRefresher.refreshProjects()
-  .then(function(result){
-    console.log(result);
-  }).catch(function(error){
-    console.log(error);
-  });
+function updateProjects(){
+  databaseRefresher.refreshProjects()
+    .then(function(result){
+      console.log(result);
+    }).catch(function(error){
+      console.log(error);
+    });
+}
 
 // create a new express server
 var app = express();
